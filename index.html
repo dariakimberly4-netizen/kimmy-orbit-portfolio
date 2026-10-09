@@ -119,7 +119,7 @@ previewPlayers.forEach(panel=>{
  // Missing videos automatically retain the explicitly labelled animated concept panel.
  video.addEventListener("loadeddata",()=>{panel.classList.add("has-footage");if(motionOK&&panel.closest(".screen").classList.contains("active"))video.play().catch(()=>{});});
  video.addEventListener("error",()=>{panel.classList.remove("has-footage");video.removeAttribute("src");});
- video.src="assets/previews/"+id+".mp4";
+ video.src=id==="engineered"?"assets/previews/engineered_real_motion-2.mp4":"assets/previews/"+id+".mp4";
  toggle.addEventListener("click",()=>{if(video.readyState>=2){if(video.paused){video.play().catch(()=>{});toggle.textContent="PAUSE PREVIEW";toggle.setAttribute("aria-pressed","false")}else{video.pause();toggle.textContent="PLAY PREVIEW";toggle.setAttribute("aria-pressed","true")}}else{const paused=panel.classList.toggle("paused");toggle.textContent=paused?"PLAY PREVIEW":"PAUSE PREVIEW";toggle.setAttribute("aria-pressed",String(paused));}});
 });
 const reelObserver=new MutationObserver(()=>previewPlayers.forEach(panel=>{const video=panel.querySelector("video");if(!panel.closest(".screen").classList.contains("active")){video.pause()}else if(panel.classList.contains("has-footage")&&motionOK){video.play().catch(()=>{})}}));
