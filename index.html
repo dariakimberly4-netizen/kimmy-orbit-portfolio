@@ -117,11 +117,15 @@ previewPlayers.forEach(panel=>{
  const video=panel.querySelector("video"),toggle=panel.querySelector(".reel-toggle"),id=panel.dataset.project;
  // Genuine recordings: upload to assets/previews/<project-id>.mp4 in this repository.
  // Missing videos automatically retain the explicitly labelled animated concept panel.
- video.addEventListener("loadeddata",()=>{panel.classList.add("has-footage");if(motionOK&&panel.closest(".screen").classList.contains("active"))video.play().catch(()=>{});});
- video.addEventListener("error",()=>{panel.classList.remove("has-footage");video.removeAttribute("src");});
- video.src=id==="engineered"?"assets/previews/engineered_real_motion-2.mp4":"assets/previews/"+id+".mp4";
+ const src=id==="engineered"?"https://raw.githubusercontent.com/dariakimberly4-netizen/kimmy-orbit-portfolio/main/assets/previews/engineered_real_motion-2.mp4":"assets/previews/"+id+".mp4";
+ if(id==="engineered"){panel.classList.add("has-footage");video.preload="auto";video.autoplay=true;video.loop=true;video.muted=true;video.setAttribute("muted","");video.setAttribute("playsinline","");}
+ video.addEventListener("loadedmetadata",()=>{panel.classList.add("has-footage");if(panel.closest(".screen").classList.contains("active"))video.play().catch(()=>{});});
+ video.addEventListener("canplay",()=>{panel.classList.add("has-footage");if(panel.closest(".screen").classList.contains("active"))video.play().catch(()=>{});});
+ video.addEventListener("error",()=>{if(id!=="engineered"){panel.classList.remove("has-footage");video.removeAttribute("src");}});
+ video.src=src;
+ video.load();
  toggle.addEventListener("click",()=>{if(video.readyState>=2){if(video.paused){video.play().catch(()=>{});toggle.textContent="PAUSE PREVIEW";toggle.setAttribute("aria-pressed","false")}else{video.pause();toggle.textContent="PLAY PREVIEW";toggle.setAttribute("aria-pressed","true")}}else{const paused=panel.classList.toggle("paused");toggle.textContent=paused?"PLAY PREVIEW":"PAUSE PREVIEW";toggle.setAttribute("aria-pressed",String(paused));}});
 });
-const reelObserver=new MutationObserver(()=>previewPlayers.forEach(panel=>{const video=panel.querySelector("video");if(!panel.closest(".screen").classList.contains("active")){video.pause()}else if(panel.classList.contains("has-footage")&&motionOK){video.play().catch(()=>{})}}));
+const reelObserver=new MutationObserver(()=>previewPlayers.forEach(panel=>{const video=panel.querySelector("video");if(!panel.closest(".screen").classList.contains("active")){video.pause()}else if(panel.classList.contains("has-footage")){video.play().catch(()=>{})}}));
 document.querySelectorAll(".screen.project").forEach(section=>reelObserver.observe(section,{attributes:true,attributeFilter:["class"]}));
 </script></body></html>
